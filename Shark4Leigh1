@@ -1,1 +1,21 @@
-{"nbformat":4,"nbformat_minor":0,"metadata":{"colab":{"name":"Shark4Leigh1","provenance":[],"collapsed_sections":[],"authorship_tag":"ABX9TyOEZmEbjCVj7cOnTLKpR+ta"},"kernelspec":{"name":"python3","display_name":"Python 3"}},"cells":[{"cell_type":"code","metadata":{"id":"pFYBEj7z4XrL"},"source":["from fastai.vision.all import *\r\n","from fastai.vision.widgets import *"],"execution_count":null,"outputs":[]},{"cell_type":"code","metadata":{"id":"R6YWzCDH5UYL"},"source":["path = Path()\r\n","learn_inf = load_learner(path/'sharks_export.pkl', cpu=True)\r\n","btn_upload = widgets.FileUpload()\r\n","out_pl = widgets.Output()\r\n","lbl_pred = widgets.Label()"],"execution_count":null,"outputs":[]},{"cell_type":"code","metadata":{"id":"chPPHZKG5f1c"},"source":["def on_data_change(change):\r\n","    lbl_pred.value = ''\r\n","    img = PILImage.create(btn_upload.data[-1])\r\n","    out_pl.clear_output()\r\n","    with out_pl: display(img.to_thumb(128,128))\r\n","    pred,pred_idx,probs = learn_inf.predict(img)\r\n","    lbl_pred.value = f'Prediction: {pred}; Probability: {probs[pred_idx]:.04f}'"],"execution_count":null,"outputs":[]},{"cell_type":"code","metadata":{"id":"7O5P2Wn95k7a"},"source":["btn_upload.observe(on_data_change, names=['data'])"],"execution_count":null,"outputs":[]},{"cell_type":"code","metadata":{"id":"34BPi4d75oG0"},"source":["display(VBox([widgets.Label('Select your shark!'), btn_upload, out_pl, lbl_pred]))"],"execution_count":null,"outputs":[]},{"cell_type":"code","metadata":{"id":"ihKwVmuF5sZ1"},"source":[""],"execution_count":null,"outputs":[]}]}
+from utils import *
+from fastai2.vision.widgets import *
+from fastai2.vision.all import *
+
+path = Path()
+learn_inf = load_learner(path/'export.pkl', cpu=True)
+btn_upload = widgets.FileUpload()
+out_pl = widgets.Output()
+lbl_pred = widgets.Label()
+
+def on_data_change(change):
+    lbl_pred.value = ''
+    img = PILImage.create(btn_upload.data[-1])
+    out_pl.clear_output()
+    with out_pl: display(img.to_thumb(128,128))
+    pred,pred_idx,probs = learn_inf.predict(img)
+    lbl_pred.value = f'Prediction: {pred}; Probability: {probs[pred_idx]:.04f}'
+    
+
+btn_upload.observe(on_data_change, names=['data'])
+display(VBox([widgets.Label('Select your shark!'), btn_upload, out_pl, lbl_pred]))
